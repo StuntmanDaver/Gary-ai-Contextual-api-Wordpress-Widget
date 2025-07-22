@@ -1,0 +1,135 @@
+/* Gary AI Admin Interface Styles */
+
+.gary-ai-admin {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.gary-ai-settings-tabs {
+  margin-bottom: 20px;
+}
+
+.gary-ai-settings-tabs .nav-tab {
+  padding: 8px 12px;
+  margin-right: 5px;
+  text-decoration: none;
+  border: 1px solid #ccd0d4;
+  background: #f1f1f1;
+  color: #555;
+}
+
+.gary-ai-settings-tabs .nav-tab-active {
+  background: #fff;
+  border-bottom: 1px solid #fff;
+  color: #000;
+}
+
+.gary-ai-settings-panel {
+  background: #fff;
+  border: 1px solid #ccd0d4;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.gary-ai-form-table {
+  width: 100%;
+}
+
+.gary-ai-form-table th {
+  width: 200px;
+  padding: 15px 10px 15px 0;
+  vertical-align: top;
+  font-weight: 600;
+}
+
+.gary-ai-form-table td {
+  padding: 15px 10px;
+}
+
+.gary-ai-input {
+  width: 400px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.gary-ai-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.gary-ai-button {
+  background: #0073aa;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.gary-ai-button:hover {
+  background: #005a87;
+}
+
+.gary-ai-button.secondary {
+  background: #f1f1f1;
+  color: #555;
+  border: 1px solid #ccd0d4;
+}
+
+.gary-ai-button.secondary:hover {
+  background: #e1e1e1;
+}
+
+.gary-ai-notice {
+  padding: 12px;
+  margin: 15px 0;
+  border-left: 4px solid;
+  background: #fff;
+}
+
+.gary-ai-notice.success {
+  border-left-color: #46b450;
+  background: #f7fcf0;
+}
+
+.gary-ai-notice.error {
+  border-left-color: #dc3232;
+  background: #fef7f7;
+}
+
+.gary-ai-notice.warning {
+  border-left-color: #ffb900;
+  background: #fff8e5;
+}
+
+.gary-ai-help-text {
+  font-size: 13px;
+  color: #666;
+  font-style: italic;
+  margin-top: 5px;
+}
+
+.gary-ai-status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.gary-ai-status-indicator.connected {
+  background: #46b450;
+}
+
+.gary-ai-status-indicator.disconnected {
+  background: #dc3232;
+}
+
+.gary-ai-status-indicator.pending {
+  background: #ffb900;
+}
