@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gary AI Chat Widget Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .test-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .controls {
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        button:hover {
+            background: #1d4ed8;
+        }
+        
+        .logs {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 2px 0;
+        }
+        
+        .log-error { color: #dc3545; }
+        .log-warn { color: #fd7e14; }
+        .log-info { color: #0d6efd; }
+        .log-debug { color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Gary AI Chat Widget Test</h1>
+        
+        <div class="test-info">
+            <strong>Test Environment:</strong> This page tests the Gary AI chat widget components in isolation.
+            The widget will use mock API responses since we're not connected to WordPress.
+        </div>
+        
+        <div class="controls">
+            <button onclick="initializeWidget()">Initialize Widget</button>
+            <button onclick="openWidget()">Open Widget</button>
+            <button onclick="closeWidget()">Close Widget</button>
+            <button onclick="sendTestMessage()">Send Test Message</button>
+            <button onclick="showTyping()">Show Typing</button>
+            <button onclick="clearLogs()">Clear Logs</button>
+        </div>
+        
+        <div class="logs" id="logs">
+            <div class="log-entry log-info">Ready to test widget...</div>
+        </div>
+    </div>
+
+    <!-- Widget will be mounted here -->
+    <div id="gary-ai-widget-container"></div>
+
+    <script type="module">
+        // Import widget components
+        import { ChatWidget } from '../../src/components/ChatWidget.js';
+        import { ApiClient } from '../../src/utils/ApiClient.js';
+        import { Logger } from '../../src/utils/Logger.js';
+
+        // Global variables for testing
+        let widget = null;
+        let logger = null;
+        let apiClient = null;
+
+        // Mock API client for testing
+        class MockApiClient {
+            constructor() {
+                this.logger = new Logger('MockAPI');
+            }
+
+            async getToken() {
+                await this.delay(500);
+                return {
+                    token: 'mock-token-12345',
+                    expires_in: 900,
+                    session_id: 'mock-session-' + Date.now()
+                };
+            }
+
+            async getSettings() {
+                await this.delay(300);
+                return {
+                    widget_enabled: true,
+                    widget_position: 'bottom-right',
+                    widget_theme: 'light',
+                    max_conversation_length: 50
+                };
+            }
+
+            async sendMessage(message, conversationId = null) {
+                await this.delay(1500); // Simulate AI processing time
+                
+                const responses = [
+                    "Hello! I'm Gary AI, your helpful assistant. How can I help you today?",
+                    "That's a great question! Let me think about that for a moment...",
+                    "I understand what you're asking. Here's what I think:\n\n```javascript\nconst example = 'This is a code example';\nconsole.log(example);\n```\n\nDoes this help?",
+                    "I'm here to help with any questions you might have. Feel free to ask me anything!",
+                    "**Bold text** and *italic text* work great in my responses. I can also create:\n\n- Lists\n- With multiple items\n- That are easy to read"
+                ];
+                
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                
+                return {
+                    conversation_id: conversationId || 'mock-conv-' + Date.now(),
+                    message_id: 'mock-msg-' + Date.now(),
+                    response: randomResponse,
+                    token_count: Math.floor(Math.random() * 100) + 50
+                };
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+
+        // Initialize logger with custom output to our test page
+        function initializeLogger() {
+            logger = new Logger('TestWidget', {
+                enableConsole: true,
+                enableStorage: false
+            });
+
+            // Override logger methods to also output to our test logs
+            const originalLog = logger.log.bind(logger);
+            logger.log = function(level, message, data) {
+                originalLog(level, message, data);
+                addLogEntry(level, message, data);
+            };
+        }
+
+        // Add log entry to test page
+        function addLogEntry(level, message, data) {
+            const logsContainer = document.getElementById('logs');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${level.toLowerCase()}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const dataStr = data ? ` ${JSON.stringify(data)}` : '';
+            entry.textContent = `[${timestamp}] [${level}] ${message}${dataStr}`;
+            
+            logsContainer.appendChild(entry);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+
+        // Initialize widget
+        async function initializeWidget() {
+            try {
+                if (widget) {
+                    widget.destroy();
+                }
+
+                initializeLogger();
+                apiClient = new MockApiClient();
+
+                const container = document.getElementById('gary-ai-widget-container');
+                
+                widget = new ChatWidget({
+                    apiClient: apiClient,
+                    logger: logger,
+                    container: container
+                });
+
+                await widget.mount();
+                
+                addLogEntry('INFO', 'Widget initialized successfully');
+            } catch (error) {
+                addLogEntry('ERROR', 'Failed to initialize widget', { error: error.message });
+            }
+        }
+
+        // Open widget
+        function openWidget() {
+            if (widget) {
+                widget.open();
+                addLogEntry('INFO', 'Widget opened');
+            } else {
+                addLogEntry('WARN', 'Widget not initialized');
+            }
+        }
+
+        // Close widget
+        function closeWidget() {
+            if (widget) {
+                widget.close();
+                addLogEntry('INFO', 'Widget closed');
+            } else {
+                addLogEntry('WARN', 'Widget not initialized');
+            }
+        }
+
+        // Send test message
+        async function sendTestMessage() {
+            if (widget && widget.isOpen) {
+                const testMessages = [
+                    "Hello, can you help me?",
+                    "What can you do?",
+                    "Show me some code examples",
+                    "Tell me about markdown formatting"
+                ];
+                
+                const message = testMessages[Math.floor(Math.random() * testMessages.length)];
+                
+                // Simulate user typing
+                widget.elements.input.value = message;
+                widget.updateSendButton();
+                
+                // Send the message
+                await widget.handleSendMessage();
+                
+                addLogEntry('INFO', 'Test message sent', { message });
+            } else {
+                addLogEntry('WARN', 'Widget not open or not initialized');
+            }
+        }
+
+        // Show typing indicator
+        function showTyping() {
+            if (widget) {
+                widget.components.typingIndicator.show();
+                
+                setTimeout(() => {
+                    widget.components.typingIndicator.hide();
+                }, 3000);
+                
+                addLogEntry('INFO', 'Typing indicator shown for 3 seconds');
+            } else {
+                addLogEntry('WARN', 'Widget not initialized');
+            }
+        }
+
+        // Clear logs
+        function clearLogs() {
+            const logsContainer = document.getElementById('logs');
+            logsContainer.innerHTML = '<div class="log-entry log-info">Logs cleared...</div>';
+        }
+
+        // Make functions global for button onclick handlers
+        window.initializeWidget = initializeWidget;
+        window.openWidget = openWidget;
+        window.closeWidget = closeWidget;
+        window.sendTestMessage = sendTestMessage;
+        window.showTyping = showTyping;
+        window.clearLogs = clearLogs;
+
+        // Auto-initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            addLogEntry('INFO', 'Test page loaded, ready to initialize widget');
+        });
+    </script>
+</body>
+</html>

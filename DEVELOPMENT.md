@@ -34,7 +34,7 @@ Update the following constants in `docker-compose.yml` or your `wp-config.php`:
 
 ```php
 define('GARY_AI_API_ENDPOINT', 'https://api.contextual.ai/');
-define('GARY_AI_JWT_SECRET', 'your-jwt-secret-key-here');
+// WordPress nonces are used for authentication - no JWT secret needed
 define('GARY_AI_ENCRYPTION_KEY', 'your-32-byte-encryption-key-here');
 
 // API Credentials (set in wp-config.php or environment)

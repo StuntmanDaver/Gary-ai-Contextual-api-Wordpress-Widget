@@ -38,7 +38,7 @@
 
 * **Conversational Chat Widget** – Lightweight, responsive, and lazy-loaded.
 * **Contextual AI Integration** – Complete coverage of all public REST endpoints (datastores, agents, generate, rerank, parse, users, etc.).
-* **Secure Authentication** – JWT-based handshake plus symmetric data encryption.
+* **Secure Authentication** – WordPress nonce-based authentication plus symmetric data encryption.
 * **Rate Limiting** – Adjustable per-site and per-user throttle.
 * **Multisite & CDN Ready** – Compatible with WordPress Network installs and static-asset CDNs.
 * **Analytics Dashboard** – Real-time conversation metrics and system health.
@@ -84,7 +84,7 @@ if ( function_exists( 'gary_ai_render_widget' ) ) {
 // Production Settings
 define('GARY_AI_VERSION', '1.0.0');
 define('GARY_AI_API_ENDPOINT', 'https://api.contextual.ai/');
-define('GARY_AI_JWT_SECRET',   '[secure-key]');
+// WordPress nonces are used for authentication - no JWT secret needed
 define('GARY_AI_ENCRYPTION_KEY','[encryption-key]');
 
 // API Credentials
@@ -327,7 +327,7 @@ gary-ai/
 │
 ├── includes/
 │   ├── class-contextual-ai-client.php    # RESTful API wrapper
-│   ├── class-jwt-auth.php                # Authentication logic
+│   ├── class-wordpress-auth.php          # WordPress-native authentication
 │   ├── class-encryption.php              # Encryption utilities
 │   ├── class-rate-limiter.php            # Throttle & quota
 │   ├── class-conversation-manager.php    # Session store & flow
@@ -352,7 +352,7 @@ gary-ai/
 
 ## Security Considerations
 
-* JWT authentication (rotating secrets supported).
+* WordPress nonce authentication (native WordPress security).
 * AES-256 encryption for stored conversation data.
 * Prepared SQL statements & WPDB abstraction to mitigate SQL injection.
 * Strict Content-Security-Policy & nonce-based scripts in admin.

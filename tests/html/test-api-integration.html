@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gary AI - REST API Integration Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e1e5e9;
+            border-radius: 6px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #2563eb;
+        }
+        .test-result {
+            padding: 12px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        .error {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #ef4444;
+        }
+        .info {
+            background: #dbeafe;
+            color: #1d4ed8;
+            border: 1px solid #3b82f6;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        .config-section {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        input[type="text"], input[type="url"] {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-connected { background: #10b981; }
+        .status-disconnected { background: #ef4444; }
+        .status-testing { background: #f59e0b; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Gary AI REST API Integration Test</h1>
+        <p>This page tests the integration between the frontend chat widget and WordPress REST API endpoints.</p>
+        
+        <div class="config-section">
+            <h3>Configuration</h3>
+            <label>
+                WordPress REST API Base URL:
+                <input type="url" id="apiBaseUrl" value="/wp-json/gary-ai/v1" placeholder="http://localhost/wp-json/gary-ai/v1">
+            </label>
+            <label>
+                WordPress Nonce (if available):
+                <input type="text" id="wpNonce" placeholder="Leave empty to test without authentication">
+            </label>
+            <button onclick="updateConfig()">Update Configuration</button>
+        </div>
+
+        <div class="test-section">
+            <h3><span class="status-indicator status-disconnected" id="healthStatus"></span>Health Check Test</h3>
+            <p>Tests the <code>/health</code> endpoint to verify API connectivity.</p>
+            <button onclick="testHealthCheck()">Test Health Check</button>
+            <div id="healthResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h3><span class="status-indicator status-disconnected" id="tokenStatus"></span>Token Generation Test</h3>
+            <p>Tests the <code>/token</code> endpoint for WordPress authentication.</p>
+            <button onclick="testTokenGeneration()">Test Token Generation</button>
+            <div id="tokenResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h3><span class="status-indicator status-disconnected" id="settingsStatus"></span>Settings Retrieval Test</h3>
+            <p>Tests the <code>/settings</code> endpoint for widget configuration.</p>
+            <button onclick="testSettingsRetrieval()">Test Settings Retrieval</button>
+            <div id="settingsResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h3><span class="status-indicator status-disconnected" id="chatStatus"></span>Chat Integration Test</h3>
+            <p>Tests the <code>/chat</code> endpoint with a sample message.</p>
+            <label>
+                Test Message:
+                <input type="text" id="testMessage" value="Hello, this is a test message from the integration test." style="margin-top: 10px;">
+            </label>
+            <button onclick="testChatIntegration()">Test Chat Integration</button>
+            <div id="chatResult"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎯 Full Integration Test</h3>
+            <p>Runs all tests in sequence to verify complete integration.</p>
+            <button onclick="runFullIntegrationTest()">Run Full Integration Test</button>
+            <div id="fullTestResult"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Global configuration
+        let config = {
+            baseUrl: '/wp-json/gary-ai/v1',
+            nonce: '',
+            sessionId: 'test-session-' + Date.now()
+        };
+
+        // Update configuration
+        window.updateConfig = function() {
+            config.baseUrl = document.getElementById('apiBaseUrl').value;
+            config.nonce = document.getElementById('wpNonce').value;
+            
+            showResult('info', 'Configuration updated successfully', 'healthResult');
+            console.log('Updated config:', config);
+        };
+
+        // Utility function to make API requests
+        async function makeRequest(endpoint, options = {}) {
+            const url = config.baseUrl + endpoint;
+            const headers = {
+                'Content-Type': 'application/json',
+                ...options.headers
+            };
+
+            if (config.nonce) {
+                headers['X-WP-Nonce'] = config.nonce;
+            }
+
+            const requestOptions = {
+                method: options.method || 'GET',
+                headers,
+                ...options
+            };
+
+            if (options.body && typeof options.body === 'object') {
+                requestOptions.body = JSON.stringify(options.body);
+            }
+
+            console.log('Making request:', url, requestOptions);
+
+            try {
+                const response = await fetch(url, requestOptions);
+                const data = await response.json();
+                
+                return {
+                    ok: response.ok,
+                    status: response.status,
+                    data,
+                    response
+                };
+            } catch (error) {
+                return {
+                    ok: false,
+                    status: 0,
+                    error: error.message,
+                    data: null
+                };
+            }
+        }
+
+        // Utility function to show results
+        function showResult(type, message, containerId) {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = message;
+            container.appendChild(div);
+        }
+
+        // Update status indicator
+        function updateStatus(statusId, status) {
+            const indicator = document.getElementById(statusId);
+            indicator.className = `status-indicator status-${status}`;
+        }
+
+        // Test health check endpoint
+        window.testHealthCheck = async function() {
+            updateStatus('healthStatus', 'testing');
+            const container = document.getElementById('healthResult');
+            container.innerHTML = '';
+
+            showResult('info', 'Testing health check endpoint...', 'healthResult');
+
+            try {
+                const result = await makeRequest('/health');
+                
+                if (result.ok) {
+                    updateStatus('healthStatus', 'connected');
+                    showResult('success', `✅ Health check passed: ${JSON.stringify(result.data, null, 2)}`, 'healthResult');
+                } else {
+                    updateStatus('healthStatus', 'disconnected');
+                    showResult('error', `❌ Health check failed: ${result.status} - ${JSON.stringify(result.data, null, 2)}`, 'healthResult');
+                }
+            } catch (error) {
+                updateStatus('healthStatus', 'disconnected');
+                showResult('error', `❌ Health check error: ${error.message}`, 'healthResult');
+            }
+        };
+
+        // Test token generation endpoint
+        window.testTokenGeneration = async function() {
+            updateStatus('tokenStatus', 'testing');
+            const container = document.getElementById('tokenResult');
+            container.innerHTML = '';
+
+            showResult('info', 'Testing token generation endpoint...', 'tokenResult');
+
+            try {
+                const result = await makeRequest('/token', {
+                    headers: {
+                        'X-Session-ID': config.sessionId
+                    }
+                });
+                
+                if (result.ok && result.data.success) {
+                    updateStatus('tokenStatus', 'connected');
+                    showResult('success', `✅ Token generated successfully: ${JSON.stringify(result.data, null, 2)}`, 'tokenResult');
+                    
+                    // Store token for future requests
+                    if (result.data.data && result.data.data.token) {
+                        config.token = result.data.data.token;
+                        showResult('info', '🔑 Token stored for subsequent requests', 'tokenResult');
+                    }
+                } else {
+                    updateStatus('tokenStatus', 'disconnected');
+                    showResult('error', `❌ Token generation failed: ${result.status} - ${JSON.stringify(result.data, null, 2)}`, 'tokenResult');
+                }
+            } catch (error) {
+                updateStatus('tokenStatus', 'disconnected');
+                showResult('error', `❌ Token generation error: ${error.message}`, 'tokenResult');
+            }
+        };
+
+        // Test settings retrieval endpoint
+        window.testSettingsRetrieval = async function() {
+            updateStatus('settingsStatus', 'testing');
+            const container = document.getElementById('settingsResult');
+            container.innerHTML = '';
+
+            showResult('info', 'Testing settings retrieval endpoint...', 'settingsResult');
+
+            try {
+                const headers = {};
+                if (config.token) {
+                    headers['Authorization'] = `Bearer ${config.token}`;
+                }
+
+                const result = await makeRequest('/settings', { headers });
+                
+                if (result.ok) {
+                    updateStatus('settingsStatus', 'connected');
+                    showResult('success', `✅ Settings retrieved successfully: ${JSON.stringify(result.data, null, 2)}`, 'settingsResult');
+                } else {
+                    updateStatus('settingsStatus', 'disconnected');
+                    showResult('error', `❌ Settings retrieval failed: ${result.status} - ${JSON.stringify(result.data, null, 2)}`, 'settingsResult');
+                }
+            } catch (error) {
+                updateStatus('settingsStatus', 'disconnected');
+                showResult('error', `❌ Settings retrieval error: ${error.message}`, 'settingsResult');
+            }
+        };
+
+        // Test chat integration endpoint
+        window.testChatIntegration = async function() {
+            updateStatus('chatStatus', 'testing');
+            const container = document.getElementById('chatResult');
+            container.innerHTML = '';
+
+            const message = document.getElementById('testMessage').value;
+            if (!message.trim()) {
+                showResult('error', '❌ Please enter a test message', 'chatResult');
+                updateStatus('chatStatus', 'disconnected');
+                return;
+            }
+
+            showResult('info', 'Testing chat integration endpoint...', 'chatResult');
+
+            try {
+                const headers = {};
+                if (config.token) {
+                    headers['Authorization'] = `Bearer ${config.token}`;
+                }
+
+                const result = await makeRequest('/chat', {
+                    method: 'POST',
+                    headers,
+                    body: {
+                        message: message,
+                        session_id: config.sessionId
+                    }
+                });
+                
+                if (result.ok && result.data.success) {
+                    updateStatus('chatStatus', 'connected');
+                    showResult('success', `✅ Chat integration successful: ${JSON.stringify(result.data, null, 2)}`, 'chatResult');
+                } else {
+                    updateStatus('chatStatus', 'disconnected');
+                    showResult('error', `❌ Chat integration failed: ${result.status} - ${JSON.stringify(result.data, null, 2)}`, 'chatResult');
+                }
+            } catch (error) {
+                updateStatus('chatStatus', 'disconnected');
+                showResult('error', `❌ Chat integration error: ${error.message}`, 'chatResult');
+            }
+        };
+
+        // Run full integration test
+        window.runFullIntegrationTest = async function() {
+            const container = document.getElementById('fullTestResult');
+            container.innerHTML = '';
+
+            showResult('info', '🚀 Starting full integration test...', 'fullTestResult');
+
+            // Test sequence
+            const tests = [
+                { name: 'Health Check', fn: testHealthCheck },
+                { name: 'Token Generation', fn: testTokenGeneration },
+                { name: 'Settings Retrieval', fn: testSettingsRetrieval },
+                { name: 'Chat Integration', fn: testChatIntegration }
+            ];
+
+            let passedTests = 0;
+            let totalTests = tests.length;
+
+            for (const test of tests) {
+                showResult('info', `Running ${test.name}...`, 'fullTestResult');
+                
+                try {
+                    await test.fn();
+                    passedTests++;
+                    showResult('success', `✅ ${test.name} passed`, 'fullTestResult');
+                } catch (error) {
+                    showResult('error', `❌ ${test.name} failed: ${error.message}`, 'fullTestResult');
+                }
+
+                // Wait between tests
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+
+            // Final result
+            if (passedTests === totalTests) {
+                showResult('success', `🎉 Full integration test completed successfully! ${passedTests}/${totalTests} tests passed.`, 'fullTestResult');
+            } else {
+                showResult('error', `⚠️ Integration test completed with issues. ${passedTests}/${totalTests} tests passed.`, 'fullTestResult');
+            }
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Gary AI REST API Integration Test initialized');
+            
+            // Try to detect WordPress environment
+            if (typeof window.garyAI !== 'undefined') {
+                document.getElementById('apiBaseUrl').value = window.garyAI.restUrl || config.baseUrl;
+                document.getElementById('wpNonce').value = window.garyAI.nonce || '';
+                updateConfig();
+                showResult('success', '✅ WordPress environment detected and configured automatically', 'healthResult');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -67,7 +67,7 @@
 | Service               | Interfaces                                                                    | Notes                                                    |
 | --------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------------- |
 | `ContextualAIClient`  | `queryAgent()`, `listDatastores()` … all wrappers from Endpoint Directory doc | HTTP retry w/ exponential back-off                       |
-| `JWTAuth`             | `issueToken()`, `verifyToken()`                                               | HS256; 15-min expiry                                     |
+| `WordPressAuth`       | `issueToken()`, `verifyToken()`                                               | WordPress nonces; 15-min expiry                         |
 | `Encryption`          | `encrypt()`, `decrypt()`                                                      | AES-256-GCM; keys in `wp_options` (salted)               |
 | `RateLimiter`         | `isAllowed($ip)`                                                              | Token bucket; fallback to transients; Redis if available |
 | `ConversationManager` | CRUD for conversations/messages                                               | Encrypt payload before insert                            |
@@ -76,7 +76,7 @@
 ### 2.3 REST Routes
 
 * Name-space `gary-ai/v1`.
-* `/token` (GET) → JWT.
+* `/token` (GET) → WordPress authentication token.
 * `/chat` (POST) → passes prompt to Contextual AI.
 * `/settings` (CRUD) – admin-only.
 

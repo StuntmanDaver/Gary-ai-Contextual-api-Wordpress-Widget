@@ -1,0 +1,44 @@
+# Node.js Development and Testing Environment for Gary AI Chat Widget
+FROM node:18-alpine
+
+# Install system dependencies for Playwright
+RUN apk add --no-cache \
+    chromium \
+    git \
+    bash \
+    curl \
+    && rm -rf /var/cache/apk/*
+
+# Set Playwright to use system browsers
+ENV PLAYWRIGHT_BROWSERS_PATH=/usr/bin
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+
+# Create app directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install Node.js dependencies
+RUN npm ci --only=production=false
+
+# Install Playwright browsers (system browsers already installed above)
+RUN npx playwright install-deps
+
+# Copy application code
+COPY . .
+
+# Create necessary directories
+RUN mkdir -p /app/coverage /app/test-results /app/playwright-report
+
+# Set proper permissions
+RUN chown -R node:node /app
+
+# Switch to non-root user
+USER node
+
+# Expose ports for development server and Playwright UI
+EXPOSE 3000 9323
+
+# Default command (can be overridden)
+CMD ["npm", "run", "dev"]

@@ -26,32 +26,100 @@ define( 'GARY_AI_PLUGIN_FILE', __FILE__ );
 define( 'GARY_AI_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
 // -----------------------------------------------------------------------------
-// 2. Register activation / deactivation hooks.
+// 2. Register activation / deactivation / uninstall hooks.
 // -----------------------------------------------------------------------------
 
 register_activation_hook( __FILE__, 'gary_ai_activate' );
 register_deactivation_hook( __FILE__, 'gary_ai_deactivate' );
+register_uninstall_hook( __FILE__, 'gary_ai_uninstall' );
 
 /**
  * Plugin activation callback.
  */
 function gary_ai_activate() {
-    // Placeholder for dbDelta migrations & default option seeds.
-    do_action( 'gary_ai_activate' );
+    // Safe plugin activation with error handling
+    try {
+        // Load vendor autoloader first for PSR-3 dependencies
+        if ( file_exists( GARY_AI_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
+            require_once GARY_AI_PLUGIN_DIR . 'vendor/autoload.php';
+        }
+        
+        // Load custom autoloader
+        if ( file_exists( GARY_AI_PLUGIN_DIR . 'includes/class-autoloader.php' ) ) {
+            require_once GARY_AI_PLUGIN_DIR . 'includes/class-autoloader.php';
+            GaryAI\Autoloader::register();
+        }
+        
+        // Run installation only if installer class exists and is safe
+        if ( class_exists( 'GaryAI\Installer' ) ) {
+            GaryAI\Installer::install();
+        } else {
+            // Basic setup if installer fails
+            add_option( 'gary_ai_db_version', '1.0.0' );
+            add_option( 'gary_ai_settings', array() );
+        }
+        
+        do_action( 'gary_ai_activate' );
+        
+    } catch ( Exception $e ) {
+        // Log error but allow activation to complete
+        if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+            error_log( '[Gary AI] Activation error: ' . $e->getMessage() );
+        }
+        
+        // Basic fallback setup
+        add_option( 'gary_ai_db_version', '1.0.0' );
+        add_option( 'gary_ai_settings', array() );
+    }
 }
 
 /**
  * Plugin deactivation callback.
  */
 function gary_ai_deactivate() {
-    // Placeholder for cleanup logic.
+    // Load autoloader first
+    require_once GARY_AI_PLUGIN_DIR . 'includes/class-autoloader.php';
+    GaryAI\Autoloader::register();
+    
+    // Run deactivation cleanup
+    GaryAI\Installer::deactivate();
+    
     do_action( 'gary_ai_deactivate' );
 }
 
+/**
+ * Plugin uninstall callback.
+ */
+function gary_ai_uninstall() {
+    // Safe uninstall - avoid fatal errors if dependencies are missing
+    try {
+        // Only attempt cleanup if autoloader exists
+        if ( file_exists( GARY_AI_PLUGIN_DIR . 'includes/class-autoloader.php' ) ) {
+            require_once GARY_AI_PLUGIN_DIR . 'includes/class-autoloader.php';
+            GaryAI\Autoloader::register();
+            
+            // Only run uninstall if class exists and is safe to load
+            if ( class_exists( 'GaryAI\Installer' ) ) {
+                GaryAI\Installer::uninstall();
+            }
+        }
+        
+        // Manual cleanup as fallback
+        delete_option( 'gary_ai_db_version' );
+        delete_option( 'gary_ai_api_key' );
+        delete_option( 'gary_ai_settings' );
+        
+    } catch ( Exception $e ) {
+        // Silent fail - allow plugin deletion even if cleanup fails
+        error_log( 'Gary AI uninstall error: ' . $e->getMessage() );
+    }
+}
+
 // -----------------------------------------------------------------------------
-// 3. Load Composer autoloader if present.
+// 3. WordPress-native plugin - no Composer dependencies needed.
 // -----------------------------------------------------------------------------
 
+// Load vendor autoloader for PSR-3 dependencies
 if ( file_exists( GARY_AI_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
     require_once GARY_AI_PLUGIN_DIR . 'vendor/autoload.php';
 }
@@ -68,5 +136,29 @@ GaryAI\Autoloader::register();
 // -----------------------------------------------------------------------------
 
 add_action( 'plugins_loaded', function () {
-    do_action( 'gary_ai_bootstrap' );
+    // Safe plugin initialization with error handling
+    try {
+        // Check for database migrations on every load
+        if ( class_exists( 'GaryAI\Installer' ) ) {
+            GaryAI\Installer::maybe_migrate();
+        }
+        
+        // Initialize REST API controller only if class exists and is safe
+        if ( class_exists( 'GaryAI\RestApiController' ) ) {
+            new GaryAI\RestApiController();
+        }
+        
+        // Initialize frontend controller only if class exists and is safe
+        if ( class_exists( 'GaryAI\FrontendController' ) ) {
+            new GaryAI\FrontendController();
+        }
+        
+        do_action( 'gary_ai_bootstrap' );
+        
+    } catch ( Exception $e ) {
+        // Log error but don't break the site
+        if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+            error_log( '[Gary AI] Plugin initialization error: ' . $e->getMessage() );
+        }
+    }
 } );

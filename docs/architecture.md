@@ -49,7 +49,7 @@ Define the high-level architecture and component breakdown for Gary AI—a conte
        │   │                                ▼
        │   │                        ┌───────────────────┐
        │   │                        │ Contextual AI API │
-       │   └───────────────────────▶│ (AI SDK, JWT Auth)│
+       │   └───────────────────────▶│ (AI SDK, WP Auth)│
        │                            └───────────────────┘
        │
        │
@@ -77,7 +77,7 @@ gary-ai/
 │   └── images/                 # Icons and graphics
 ├── includes/                   # PHP classes
 │   ├── ContextualAIClient.php  # API integration
-│   ├── JWTAuth.php             # Secure token handling
+│   ├── WordPressAuth.php       # WordPress-native authentication
 │   ├── GDPRCompliance.php      # Consent & user rights
 │   ├── Encryption.php          # Data protection utilities
 │   ├── RateLimiter.php         # Request throttling
@@ -85,7 +85,7 @@ gary-ai/
 │   ├── Analytics.php           # Usage tracking
 │   └── AdminInterface.php      # WP admin settings
 └── vendor/                     # Composer dependencies
-    ├── firebase/               # JWT library
+    ├── (no external auth libs)   # WordPress-native authentication
     ├── contextual-ai/          # Official AI SDK
     └── other libraries         # Validation, security, utils
 ```
@@ -111,7 +111,7 @@ gary-ai/
 | `/wp-json/gary-ai/v1/admin`      | Admin operations and health checks |
 | `/wp-json/gary-ai/v1/compliance` | GDPR operations (data requests)    |
 
-*(Total: 54 endpoints; secured via JWT + WP capability checks)*
+*(Total: 54 endpoints; secured via WordPress nonces + capability checks)*
 
 ### 4.4 AI Integration & Backend
 
@@ -129,7 +129,7 @@ gary-ai/
 * **Encryption**: AES-256 at rest, TLS in transit
 * **Input Validation**: Sanitization via WP API, prepared statements
 * **CSRF/XSS Protection**: WP nonces, CSP headers, output escaping
-* **Authentication**: JWT tokens for API clients, WP capability checks
+* **Authentication**: WordPress nonces for API clients, WP capability checks
 
 ---
 

@@ -46,8 +46,16 @@ class Autoloader {
 
         $file = self::$baseDir . $relativePath;
 
+        // Try standard naming first
         if ( file_exists( $file ) ) {
             require_once $file;
+            return;
+        }
+
+        // Try class- prefix naming convention
+        $classFile = self::$baseDir . 'class-' . strtolower( $relativeClass ) . '.php';
+        if ( file_exists( $classFile ) ) {
+            require_once $classFile;
         }
     }
 }

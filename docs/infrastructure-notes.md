@@ -22,7 +22,7 @@ Invoke-WebRequest -Uri http://localhost:5050/api/NaturalLanguageQuery/execute -M
 ## Security Notes
 - Store API keys in `wp-config.php` or environment variables
 - Never commit credentials to version control
-- Use JWT tokens for client-side authentication
+- Use WordPress nonces for client-side authentication
 - Implement proper rate limiting and input validation
 
 ## Deployment Considerations

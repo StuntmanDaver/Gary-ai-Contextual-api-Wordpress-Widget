@@ -1,0 +1,616 @@
+/**
+ * Gary AI Chat Widget Styles
+ * 
+ * Following the UI plan with Inter/JetBrains Mono fonts and CSS custom properties.
+ * Optimized for accessibility, responsiveness, and WordPress integration.
+ * Target: 9KB CSS bundle size
+ * 
+ * @package GaryAI
+ * @since 1.0.0
+ */
+
+/* --------------  Font Faces -------------- */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap");
+
+/* --------------  CSS Custom Properties (Per UI Plan) -------------- */
+:root {
+  /* Font families - Matching UI plan exactly */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Font weights - Matching UI plan exactly */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+
+  /* Letter spacing - Matching UI plan exactly */
+  --tracking-tight: -0.005em;
+  --tracking-wide: 0.12em;
+
+  /* Gary AI specific colors */
+  --gary-ai-primary: #2563eb;
+  --gary-ai-primary-dark: #1d4ed8;
+  --gary-ai-secondary: #64748b;
+  --gary-ai-success: #10b981;
+  --gary-ai-error: #ef4444;
+  --gary-ai-warning: #f59e0b;
+
+  /* Background colors */
+  --gary-ai-bg-primary: #ffffff;
+  --gary-ai-bg-secondary: #f8fafc;
+  --gary-ai-bg-tertiary: #f1f5f9;
+  --gary-ai-bg-overlay: rgba(0, 0, 0, 0.5);
+
+  /* Text colors */
+  --gary-ai-text-primary: #0f172a;
+  --gary-ai-text-secondary: #475569;
+  --gary-ai-text-tertiary: #94a3b8;
+  --gary-ai-text-inverse: #ffffff;
+
+  /* Border colors */
+  --gary-ai-border: #e2e8f0;
+  --gary-ai-border-light: #f1f5f9;
+  --gary-ai-border-dark: #cbd5e1;
+
+  /* Spacing scale */
+  --gary-ai-space-xs: 4px;
+  --gary-ai-space-sm: 8px;
+  --gary-ai-space-md: 12px;
+  --gary-ai-space-lg: 16px;
+  --gary-ai-space-xl: 24px;
+  --gary-ai-space-2xl: 32px;
+
+  /* Widget dimensions */
+  --gary-ai-widget-width-desktop: 360px;
+  --gary-ai-widget-height-desktop: 500px;
+  --gary-ai-widget-width-mobile: 100vw;
+  --gary-ai-widget-height-mobile: 100vh;
+
+  /* Animation durations */
+  --gary-ai-duration-fast: 150ms;
+  --gary-ai-duration-normal: 200ms;
+  --gary-ai-duration-slow: 300ms;
+
+  /* Z-index scale */
+  --gary-ai-z-button: 999998;
+  --gary-ai-z-widget: 999999;
+  --gary-ai-z-modal: 1000000;
+
+  /* Border radius */
+  --gary-ai-radius-sm: 6px;
+  --gary-ai-radius-md: 8px;
+  --gary-ai-radius-lg: 12px;
+  --gary-ai-radius-xl: 16px;
+
+  /* Shadows */
+  --gary-ai-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --gary-ai-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --gary-ai-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --gary-ai-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Dark theme overrides */
+[data-gary-ai-theme="dark"] {
+  --gary-ai-bg-primary: #1e293b;
+  --gary-ai-bg-secondary: #334155;
+  --gary-ai-bg-tertiary: #475569;
+  --gary-ai-text-primary: #f8fafc;
+  --gary-ai-text-secondary: #cbd5e1;
+  --gary-ai-text-tertiary: #94a3b8;
+  --gary-ai-border: #475569;
+  --gary-ai-border-light: #334155;
+  --gary-ai-border-dark: #64748b;
+}
+
+/* --------------  Base Styles -------------- */
+
+/* Screen reader only utility */
+.gary-ai-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Hidden utility */
+.gary-ai-hidden {
+  display: none !important;
+}
+
+/* Focus styles for accessibility */
+.gary-ai-focus-visible:focus-visible {
+  outline: 2px solid var(--gary-ai-primary);
+  outline-offset: 2px;
+}
+
+/* --------------  Chat Button Styles -------------- */
+.gary-ai-chat-button {
+  position: fixed;
+  bottom: var(--gary-ai-space-2xl);
+  right: var(--gary-ai-space-lg);
+  width: 56px;
+  height: 56px;
+  background: var(--gary-ai-primary);
+  color: var(--gary-ai-text-inverse);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--gary-ai-shadow-lg);
+  transition: all var(--gary-ai-duration-normal) ease;
+  z-index: var(--gary-ai-z-button);
+  font-family: var(--font-sans);
+}
+
+.gary-ai-chat-button:hover {
+  background: var(--gary-ai-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--gary-ai-shadow-xl);
+}
+
+.gary-ai-chat-button:focus-visible {
+  outline: 2px solid var(--gary-ai-primary);
+  outline-offset: 4px;
+}
+
+.gary-ai-chat-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Button positioning variants */
+.gary-ai-chat-button[data-position="bottom-left"] {
+  left: var(--gary-ai-space-lg);
+  right: auto;
+}
+
+.gary-ai-chat-button[data-position="top-right"] {
+  top: var(--gary-ai-space-2xl);
+  bottom: auto;
+}
+
+.gary-ai-chat-button[data-position="top-left"] {
+  top: var(--gary-ai-space-2xl);
+  left: var(--gary-ai-space-lg);
+  bottom: auto;
+  right: auto;
+}
+
+/* --------------  Widget Container Styles -------------- */
+.gary-ai-widget-container {
+  position: fixed;
+  bottom: var(--gary-ai-space-2xl);
+  right: var(--gary-ai-space-lg);
+  width: var(--gary-ai-widget-width-desktop);
+  height: var(--gary-ai-widget-height-desktop);
+  background: var(--gary-ai-bg-primary);
+  border: 1px solid var(--gary-ai-border);
+  border-radius: var(--gary-ai-radius-xl);
+  box-shadow: var(--gary-ai-shadow-xl);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  pointer-events: none;
+  transition: all var(--gary-ai-duration-slow) ease;
+  z-index: var(--gary-ai-z-widget);
+  font-family: var(--font-sans);
+}
+
+.gary-ai-widget-container.gary-ai-widget-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* Widget positioning variants */
+.gary-ai-widget-container[data-position="bottom-left"] {
+  left: var(--gary-ai-space-lg);
+  right: auto;
+}
+
+.gary-ai-widget-container[data-position="top-right"] {
+  top: var(--gary-ai-space-2xl);
+  bottom: auto;
+}
+
+.gary-ai-widget-container[data-position="top-left"] {
+  top: var(--gary-ai-space-2xl);
+  left: var(--gary-ai-space-lg);
+  bottom: auto;
+  right: auto;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .gary-ai-widget-container {
+    width: var(--gary-ai-widget-width-mobile);
+    height: var(--gary-ai-widget-height-mobile);
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 0;
+    border-radius: 0;
+    transform: translateY(100%);
+  }
+  
+  .gary-ai-widget-container.gary-ai-widget-open {
+    transform: translateY(0);
+  }
+  
+  .gary-ai-chat-button {
+    bottom: var(--gary-ai-space-lg);
+    right: var(--gary-ai-space-lg);
+  }
+}
+
+/* --------------  Chat Header Styles -------------- */
+.gary-ai-chat-header {
+  padding: var(--gary-ai-space-lg) var(--gary-ai-space-xl);
+  background: var(--gary-ai-bg-primary);
+  border-bottom: 1px solid var(--gary-ai-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.gary-ai-chat-title {
+  /* Using UI plan h2 styles */
+  font: var(--fw-medium) clamp(1.25rem, 2vw + 0.5rem, 1.5rem)/1.15 var(--font-sans);
+  letter-spacing: var(--tracking-tight);
+  color: var(--gary-ai-text-primary);
+  margin: 0;
+}
+
+.gary-ai-chat-subtitle {
+  /* Using UI plan body copy styles */
+  font: var(--fw-regular) 0.875rem/1.6 var(--font-sans);
+  color: var(--gary-ai-text-secondary);
+  margin: var(--gary-ai-space-xs) 0 0 0;
+}
+
+.gary-ai-close-button,
+.gary-ai-minimize-button {
+  background: none;
+  border: none;
+  padding: var(--gary-ai-space-sm);
+  border-radius: var(--gary-ai-radius-sm);
+  cursor: pointer;
+  color: var(--gary-ai-text-secondary);
+  transition: all var(--gary-ai-duration-fast) ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gary-ai-close-button:hover,
+.gary-ai-minimize-button:hover {
+  background: var(--gary-ai-bg-secondary);
+  color: var(--gary-ai-text-primary);
+}
+
+.gary-ai-close-button svg,
+.gary-ai-minimize-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* --------------  Messages Container Styles -------------- */
+.gary-ai-messages-container {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.gary-ai-scroll-container {
+  height: 100%;
+  overflow-y: auto;
+  padding: 0 var(--gary-ai-space-lg);
+  scroll-behavior: smooth;
+}
+
+.gary-ai-messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gary-ai-space-lg);
+  padding: var(--gary-ai-space-lg) 0;
+  min-height: 100%;
+}
+
+/* --------------  Message Styles -------------- */
+.gary-ai-message {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gary-ai-space-sm);
+  opacity: 0;
+  animation: gary-ai-message-appear var(--gary-ai-duration-slow) ease forwards;
+}
+
+@keyframes gary-ai-message-appear {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gary-ai-message-header {
+  display: flex;
+  align-items: center;
+  gap: var(--gary-ai-space-sm);
+}
+
+.gary-ai-message-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.gary-ai-message-user .gary-ai-message-avatar {
+  background: var(--gary-ai-primary);
+  color: var(--gary-ai-text-inverse);
+}
+
+.gary-ai-message-bot .gary-ai-message-avatar {
+  background: var(--gary-ai-bg-secondary);
+  color: var(--gary-ai-text-primary);
+}
+
+.gary-ai-message-error .gary-ai-message-avatar {
+  background: #fee2e2;
+  color: var(--gary-ai-error);
+}
+
+.gary-ai-message-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gary-ai-message-sender {
+  font: var(--fw-semibold) 0.875rem/1.3 var(--font-sans);
+  color: var(--gary-ai-text-primary);
+}
+
+.gary-ai-message-timestamp {
+  /* Using UI plan nav-label styles */
+  font: var(--fw-regular) 0.75rem/1.3 var(--font-sans);
+  color: var(--gary-ai-text-tertiary);
+}
+
+.gary-ai-message-content {
+  padding: 12px 16px;
+  line-height: 1.6;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.gary-ai-message-error .gary-ai-message-content {
+  color: var(--gary-ai-error);
+  background: #fee2e2;
+  padding: var(--gary-ai-space-md);
+  border-radius: var(--gary-ai-radius-md);
+  border-left: 4px solid var(--gary-ai-error);
+  margin-left: 0;
+}
+
+/* Code block styles */
+.gary-ai-code-block {
+  background: var(--gary-ai-bg-secondary);
+  border: 1px solid var(--gary-ai-border);
+  border-radius: var(--gary-ai-radius-md);
+  padding: var(--gary-ai-space-lg);
+  margin: var(--gary-ai-space-sm) 0;
+  overflow-x: auto;
+  position: relative;
+  /* Using UI plan monospace styles */
+  font: var(--fw-regular) 0.9375rem/1.5 var(--font-mono);
+}
+
+.gary-ai-inline-code {
+  background: var(--gary-ai-bg-secondary);
+  padding: 2px 6px;
+  border-radius: var(--gary-ai-radius-sm);
+  /* Using UI plan monospace styles */
+  font: var(--fw-regular) 0.9375rem/1.5 var(--font-mono);
+}
+
+/* --------------  Input Area Styles -------------- */
+.gary-ai-input-area {
+  border-top: 1px solid var(--gary-ai-border);
+  padding: var(--gary-ai-space-lg);
+  background: var(--gary-ai-bg-primary);
+  flex-shrink: 0;
+}
+
+.gary-ai-input-wrapper {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--gary-ai-space-sm);
+  background: var(--gary-ai-bg-secondary);
+  border: 1px solid var(--gary-ai-border);
+  border-radius: var(--gary-ai-radius-lg);
+  padding: var(--gary-ai-space-sm) var(--gary-ai-space-md);
+  transition: border-color var(--gary-ai-duration-normal) ease, box-shadow var(--gary-ai-duration-normal) ease;
+}
+
+.gary-ai-input-focused .gary-ai-input-wrapper {
+  border-color: var(--gary-ai-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.gary-ai-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  resize: none;
+  /* Using UI plan body copy styles */
+  font: var(--fw-regular) 1rem/1.6 var(--font-sans);
+  color: var(--gary-ai-text-primary);
+  min-height: 24px;
+  max-height: 120px;
+}
+
+.gary-ai-input::placeholder {
+  color: var(--gary-ai-text-secondary);
+}
+
+.gary-ai-send-button {
+  background: none;
+  border: none;
+  padding: var(--gary-ai-space-sm);
+  border-radius: var(--gary-ai-radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--gary-ai-duration-fast) ease;
+  flex-shrink: 0;
+  color: var(--gary-ai-text-secondary);
+}
+
+.gary-ai-send-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.gary-ai-send-button:not(:disabled) {
+  background: var(--gary-ai-primary);
+  color: var(--gary-ai-text-inverse);
+}
+
+.gary-ai-send-button:not(:disabled):hover {
+  background: var(--gary-ai-primary-dark);
+}
+
+.gary-ai-send-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* --------------  Typing Indicator Styles -------------- */
+.gary-ai-typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--gary-ai-space-md);
+  padding: var(--gary-ai-space-md) var(--gary-ai-space-lg);
+  background: var(--gary-ai-bg-secondary);
+  border-top: 1px solid var(--gary-ai-border);
+  transition: opacity var(--gary-ai-duration-slow) ease, transform var(--gary-ai-duration-slow) ease;
+}
+
+.gary-ai-typing-indicator.gary-ai-hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+}
+
+.gary-ai-typing-dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.gary-ai-typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gary-ai-text-secondary);
+  opacity: 0.4;
+  animation: gary-ai-typing-dot 1400ms infinite ease-in-out;
+}
+
+.gary-ai-typing-dot:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.gary-ai-typing-dot:nth-child(2) {
+  animation-delay: 200ms;
+}
+
+.gary-ai-typing-dot:nth-child(3) {
+  animation-delay: 400ms;
+}
+
+@keyframes gary-ai-typing-dot {
+  0%, 60%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.gary-ai-typing-indicator span {
+  /* Using UI plan body copy styles */
+  font: var(--fw-regular) 0.875rem/1.6 var(--font-sans);
+  color: var(--gary-ai-text-secondary);
+  font-style: italic;
+}
+
+/* --------------  Accessibility & Motion -------------- */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .gary-ai-typing-dot {
+    background: var(--gary-ai-text-primary);
+    opacity: 0.6;
+  }
+  
+  .gary-ai-border {
+    border-color: var(--gary-ai-text-primary);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .gary-ai-typing-dot {
+    animation: none;
+  }
+  
+  .gary-ai-widget-container,
+  .gary-ai-message {
+    transition: none;
+    animation: none;
+  }
+  
+  .gary-ai-chat-button {
+    transition: none;
+  }
+}
+
+/* Focus management */
+.gary-ai-widget-container:focus-within {
+  outline: none;
+}
+
+/* Ensure proper focus order */
+.gary-ai-widget-container * {
+  outline: none;
+}
+
+.gary-ai-widget-container *:focus-visible {
+  outline: 2px solid var(--gary-ai-primary);
+  outline-offset: 2px;
+}
