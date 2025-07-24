@@ -1,101 +1,306 @@
-# UI Development Plan
+# Gary AI Chatbot Widget Design System
 
-**Project**: Contextual FAQ Chatbot for WordPress  
-**Phase**: Front-end / Widget Styling & Integration  
-**Lead**: Front-end Engineer  
-**Date**: 19 Jul 2025  
-
----
-
-## 1. Overview  
-We'll build and style the chat widget using the provided CSS variables and font imports. The goal is a clean, accessible chat UI that matches our brand, is responsive across viewports, and plugs seamlessly into WordPress via a header-injected script or shortcode.
+**Project**: Gary AI Contextual API WordPress Widget  
+**Phase**: UI Design System Implementation  
+**Updated**: July 24, 2025  
 
 ---
 
-## 2. CSS Foundation  
-```css
-/* --------------  font faces -------------- */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap");
+## 1. Design System Overview
 
-:root {
-  /* font families */
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-               Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+This design system provides a comprehensive visual foundation for the Gary AI chatbot widget, featuring a modern teal-based color palette with professional styling and accessibility-first approach.
 
-  /* font weights */
-  --fw-regular: 400;
-  --fw-medium: 500;
-  --fw-semibold: 600;
+---
 
-  /* letter spacing */
-  --tracking-tight: -0.005em;
-  --tracking-wide: 0.12em;
-}
+## 2. Design Profile Configuration
 
-/* Display styles */
-h1 {
-  font: var(--fw-medium) clamp(2.75rem,5vw + 1rem,4.5rem)/1.08 var(--font-sans);
-  letter-spacing: var(--tracking-tight);
-}
-h2 {
-  font: var(--fw-medium) clamp(2.125rem,3vw + 0.5rem,3rem)/1.15 var(--font-sans);
-  letter-spacing: var(--tracking-tight);
-}
-
-/* Body copy */
-body, p, li {
-  font: var(--fw-regular) 1rem/1.6 var(--font-sans);
-}
-
-/* Upper-nav / small labels */
-.nav-label {
-  font: var(--fw-semibold) 0.75rem/1.3 var(--font-sans);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-wide);
-}
-
-/* Monospace snippets */
-code, pre, .metric {
-  font: var(--fw-regular) 0.9375rem/1.5 var(--font-mono);
+```json
+{
+  "canvas": {
+    "padding": 32,
+    "backgroundGradient": {
+      "type": "linear",
+      "angle": "135deg",
+      "stops": [
+        { "color": "#199ca0", "position": "0%" },
+        { "color": "#4fd1cc", "position": "100%" }
+      ]
+    }
+  },
+  "colors": {
+    "main": "#199ca0",
+    "secondary": {
+      "accentLight": "#4fd1cc",
+      "accentDark": "#126a6c",
+      "complement": "#a01919",
+      "analogous1": "#19a096",
+      "analogous2": "#19c09c"
+    },
+    "white": "#ffffff",
+    "text": "#1f2937",
+    "textMuted": "rgba(31,41,55,0.6)",
+    "border": "rgba(31,41,55,0.1)"
+  },
+  "spacing": {
+    "baseUnit": 8,
+    "xs": 4,
+    "sm": 8,
+    "md": 16,
+    "lg": 24,
+    "xl": 32,
+    "betweenChats": 24
+  },
+  "grid": {
+    "columns": 12,
+    "gutter": 24,
+    "maxWidth": 1280
+  },
+  "cards": {
+    "background": "var(--color-white)",
+    "borderRadius": 12,
+    "shadow": "0 8px 24px rgba(0,0,0,0.08)",
+    "padding": 16
+  },
+  "chat": {
+    "containerGap": 16,
+    "avatar": {
+      "size": 48,
+      "shape": "circle",
+      "backgroundGradient": {
+        "type": "radial",
+        "stops": [
+          { "color": "#199ca0", "position": "0%" },
+          { "color": "#4fd1cc", "position": "100%" }
+        ]
+      }
+    },
+    "bubble": {
+      "borderRadius": 24,
+      "paddingVertical": 8,
+      "paddingHorizontal": 16,
+      "assistant": {
+        "background": "var(--color-white)",
+        "color": "var(--color-text)",
+        "border": "1px solid var(--color-border)"
+      },
+      "user": {
+        "background": "var(--color-main)",
+        "color": "var(--color-white)"
+      }
+    }
+  },
+  "input": {
+    "card": {
+      "background": "var(--color-white)",
+      "borderRadius": 12,
+      "shadow": "0 8px 24px rgba(0,0,0,0.08)",
+      "padding": 16,
+      "label": {
+        "fontWeight": 500,
+        "marginBottom": 8,
+        "color": "var(--color-text)"
+      }
+    },
+    "field": {
+      "height": 40,
+      "border": "1px solid var(--color-border)",
+      "borderRadius": 8,
+      "padding": "8px 16px",
+      "fontSize": 15,
+      "fontWeight": 400
+    }
+  },
+  "typography": {
+    "fonts": {
+      "sans": ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"],
+      "mono": ["JetBrains Mono", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"]
+    },
+    "weights": {
+      "regular": 400,
+      "medium": 500,
+      "semiBold": 600
+    },
+    "tracking": {
+      "tight": "-0.005em",
+      "wide": "0.12em"
+    },
+    "sizes": {
+      "small": 13,
+      "base": 15,
+      "large": 17,
+      "h1": {
+        "size": "clamp(2rem,5vw + 1rem,3rem)",
+        "lineHeight": 1.1,
+        "weight": 500,
+        "tracking": "tight",
+        "color": "var(--color-white)"
+      }
+    }
+  },
+  "interaction": {
+    "hover": {
+      "cardShadow": "0 12px 32px rgba(0,0,0,0.12)"
+    },
+    "focus": {
+      "outline": "2px solid rgba(25,156,160,0.4)"
+    }
+  }
 }
 ```
 
 ---
 
-## **3. Component Breakdown**
+## 3. CSS Variables Implementation
 
-|**Component**|**Description**|**CSS Hooks / Classes**|
-|---|---|---|
-|**Chat Button**|Floating action button—opens widget|.chat-button|
-|**Chat Header**|Title bar with close icon and branding|h2, .nav-label, .close-btn|
-|**Message List**|Scrollable container for user & bot messages|.messages, .message|
-|**User Bubble**|Right-aligned text bubble for user inputs|.message.user|
-|**Bot Bubble**|Left-aligned bubble; includes citations tooltip|.message.bot, .citation|
-|**Input Area**|Text input, send button, styling|.input-area, input, button|
-|**Loading Spinner**|Inline spinner while waiting for SSE stream|.spinner (use <pre> fallback)|
+```css
+/* Gary AI Design System CSS Variables */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap");
+
+:root {
+  /* Colors */
+  --color-main: #199ca0;
+  --color-accent-light: #4fd1cc;
+  --color-accent-dark: #126a6c;
+  --color-complement: #a01919;
+  --color-analogous-1: #19a096;
+  --color-analogous-2: #19c09c;
+  --color-white: #ffffff;
+  --color-text: #1f2937;
+  --color-text-muted: rgba(31, 41, 55, 0.6);
+  --color-border: rgba(31, 41, 55, 0.1);
+
+  /* Typography */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --tracking-tight: -0.005em;
+  --tracking-wide: 0.12em;
+  --font-size-small: 13px;
+  --font-size-base: 15px;
+  --font-size-large: 17px;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-chat-gap: 24px;
+
+  /* Layout */
+  --border-radius: 12px;
+  --border-radius-bubble: 24px;
+  --border-radius-input: 8px;
+  --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --card-shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.12);
+  --focus-outline: 2px solid rgba(25, 156, 160, 0.4);
+
+  /* Canvas */
+  --canvas-padding: 32px;
+  --canvas-gradient: linear-gradient(135deg, #199ca0 0%, #4fd1cc 100%);
+
+  /* Avatar */
+  --avatar-size: 48px;
+  --avatar-gradient: radial-gradient(circle, #199ca0 0%, #4fd1cc 100%);
+
+  /* Input */
+  --input-height: 40px;
+  --input-padding: 8px 16px;
+}
+```
 
 ---
 
-## **4. Accessibility & Responsiveness**
+## 4. Component Specifications
 
-- **Contrast & Colors**: ensure ≥ 4.5:1 contrast on text.
-    
-- **Keyboard Nav**: tab order: open button → input → send → citations → close.
-    
-- **ARIA**:
-    
-    - Widget container: role="dialog" aria-labelledby="chat-header"
-        
-    - Input: aria-label="Type your question"
-        
-    
-- **Responsive**:
-    
-    - Mobile: widget 100% width, full-screen overlay.
-        
-    - Desktop: fixed 360 px width in bottom-right corner.
+### Chat Widget Container
+- **Background**: Canvas gradient (135deg, #199ca0 to #4fd1cc)
+- **Padding**: 32px
+- **Border Radius**: 12px
+- **Shadow**: 0 8px 24px rgba(0,0,0,0.08)
+- **Max Width**: 1280px (grid system)
+
+### Chat Button (Floating)
+- **Background**: Main color (#199ca0)
+- **Size**: 48px (avatar size)
+- **Border Radius**: Circle
+- **Shadow**: Card shadow with hover enhancement
+- **Position**: Fixed bottom-right
+
+### Chat Header
+- **Typography**: H1 style with clamp sizing
+- **Color**: White text on gradient background
+- **Font Weight**: Medium (500)
+- **Letter Spacing**: Tight (-0.005em)
+
+### Message Bubbles
+- **Border Radius**: 24px
+- **Padding**: 8px vertical, 16px horizontal
+- **Gap Between Messages**: 24px
+- **User Bubble**: Main color background (#199ca0), white text
+- **Assistant Bubble**: White background, text color (#1f2937), border
+
+### Avatar
+- **Size**: 48px circle
+- **Background**: Radial gradient (#199ca0 to #4fd1cc)
+- **Position**: Left-aligned for assistant messages
+
+### Input Area
+- **Background**: White card with shadow
+- **Border Radius**: 12px
+- **Padding**: 16px
+- **Input Height**: 40px
+- **Input Border**: 1px solid border color
+- **Input Border Radius**: 8px
+- **Input Padding**: 8px 16px
+- **Font Size**: 15px (base)
+
+### Typography Scale
+- **Small Text**: 13px (labels, metadata)
+- **Base Text**: 15px (body, input)
+- **Large Text**: 17px (emphasis)
+- **H1**: Responsive clamp(2rem, 5vw + 1rem, 3rem)
+
+---
+
+## 5. Accessibility & Interaction States
+
+### Focus States
+- **Outline**: 2px solid rgba(25,156,160,0.4)
+- **Applied to**: All interactive elements
+
+### Hover States
+- **Cards**: Enhanced shadow (0 12px 32px rgba(0,0,0,0.12))
+- **Buttons**: Slight opacity or color shift
+
+### Color Contrast
+- **Text on White**: #1f2937 (meets WCAG AA)
+- **White on Main**: #ffffff on #199ca0 (meets WCAG AA)
+- **Muted Text**: rgba(31,41,55,0.6) for secondary information
+
+### ARIA Implementation
+- **Widget Container**: role="dialog" aria-labelledby="chat-header"
+- **Message List**: role="log" aria-live="polite"
+- **Input**: aria-label="Type your question"
+- **Avatar**: aria-hidden="true" (decorative)
+
+---
+
+## 6. Responsive Behavior
+
+### Desktop (≥768px)
+- **Widget Width**: Fixed 360px
+- **Position**: Bottom-right corner
+- **Canvas Padding**: Full 32px
+
+### Mobile (<768px)
+- **Widget Width**: 100% viewport width
+- **Position**: Full-screen overlay
+- **Canvas Padding**: Reduced to 16px
+- **Typography**: Maintains responsive clamp scaling
         
     
 

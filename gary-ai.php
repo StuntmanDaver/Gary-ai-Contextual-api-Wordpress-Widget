@@ -135,7 +135,40 @@ GaryAI\Autoloader::register();
 // 5. Bootstrap the plugin.
 // -----------------------------------------------------------------------------
 
+// Main plugin bootstrap
 add_action( 'plugins_loaded', function () {
+    // Safe plugin initialization with error handling
+    try {
+        // Database migrations
+        if ( class_exists( 'GaryAI\Installer' ) ) {
+            GaryAI\Installer::maybe_migrate();
+        }
+
+        // REST API controller
+        if ( class_exists( 'GaryAI\RestApiController' ) ) {
+            new GaryAI\RestApiController();
+        }
+
+        // Frontend controller
+        if ( ! is_admin() && class_exists( 'GaryAI\FrontendController' ) ) {
+            new GaryAI\FrontendController();
+        }
+
+        // Admin controller
+        if ( is_admin() && class_exists( 'GaryAI\Admin\Admin' ) ) {
+            new GaryAI\Admin\Admin();
+        }
+
+        do_action( 'gary_ai_bootstrap' );
+
+    } catch ( Exception $e ) {
+        if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+            error_log( '[Gary AI] Plugin bootstrap error: ' . $e->getMessage() );
+        }
+    }
+} );
+
+/*
     // Safe plugin initialization with error handling
     try {
         // Check for database migrations on every load

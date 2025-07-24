@@ -39,8 +39,8 @@ define('GARY_AI_ENCRYPTION_KEY', 'your-32-byte-encryption-key-here');
 
 // API Credentials (set in wp-config.php or environment)
 define('CONTEXTUAL_AI_API_KEY', 'key-dODB6wQ_8CcXFQYoLLZX-BhrOHc2KidTu6y73PrewFOQDaCP4');
-define('GARY_AI_AGENT_ID', '1ef70a2a-1405-4ba5-9c27-62de4b263e20');
-define('GARY_AI_DATASTORE_ID', '6f01eb92-f12a-4113-a39f-3c4013303482');
+define('GARY_AI_AGENT_ID', 'YOUR_AGENT_ID');
+define('GARY_AI_DATASTORE_ID', 'YOUR_DATASTORE_ID');
 ```
 
 ### Development Workflow

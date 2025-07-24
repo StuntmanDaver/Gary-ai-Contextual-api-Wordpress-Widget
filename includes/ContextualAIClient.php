@@ -109,13 +109,15 @@ class ContextualAIClient {
     }
 
     /**
-     * Check API health status.
+     * Get agent metadata and configuration.
      *
-     * @return array Health status response.
-     * @throws \Exception If the request fails after all retries.
+     * @param string $agentId Agent ID.
+     * @return array Agent data.
+     * @throws \Exception If the request fails.
      */
-    public function healthCheck(): array {
-        return $this->makeRequest( 'GET', '/health' );
+    public function getAgent(string $agentId): array {
+        $endpoint = "/agents/{$agentId}";
+        return $this->makeRequest('GET', $endpoint);
     }
 
     /**
@@ -126,13 +128,15 @@ class ContextualAIClient {
      */
     public function testConnection(string $agentId): bool {
         try {
-            $health = $this->healthCheck();
-            if (empty($health)) return false;
+            // A lightweight way to test the connection is to fetch the agent's metadata.
+            // This validates the API key and confirms the agent exists.
+            $response = $this->getAgent($agentId);
             
-            // Optional: Test agent query with empty prompt to verify
-            $this->queryAgentWithPrompt($agentId, 'test');
-            return true;
+            // If the response contains an 'id', the connection is successful.
+            return !empty($response) && isset($response['id']);
         } catch (\Exception $e) {
+            // Log the specific error to help diagnose the issue.
+            $this->logError('API connection test failed: ' . $e->getMessage());
             return false;
         }
     }

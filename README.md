@@ -99,8 +99,8 @@ define('GARY_AI_ENCRYPTION_KEY','[encryption-key]');
 // API Credentials
 // Replace the placeholder keys with your own values.
 const CONTEXTUAL_AI_API_KEY = 'key-FidKuAPXPU1WqyVSmebLJoHWckdL9HgRu5wEBICCBAOavno2Y';
-const AGENT_ID              = '1ef70a2a-1405-4ba5-9c27-62de4b263e20';
-const DATASTORE_ID          = '6f01eb92-f12a-4113-a39f-3c4013303482';
+const AGENT_ID              = 'YOUR_AGENT_ID';
+const DATASTORE_ID          = 'YOUR_DATASTORE_ID';
 ```
 
 ---

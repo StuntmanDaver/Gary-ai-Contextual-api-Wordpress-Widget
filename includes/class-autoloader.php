@@ -62,7 +62,7 @@ class Autoloader {
         // Handle Admin classes in admin/ directory
         if ( strpos( $relativeClass, 'Admin\\' ) === 0 ) {
             $adminClass = substr( $relativeClass, 6 ); // Remove 'Admin\\'
-            $adminFile = dirname( self::$baseDir ) . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'class-' . strtolower( $adminClass ) . '.php';
+            $adminFile = dirname( __DIR__ ) . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'class-' . strtolower( $adminClass ) . '.php';
             if ( file_exists( $adminFile ) ) {
                 require_once $adminFile;
                 return;
