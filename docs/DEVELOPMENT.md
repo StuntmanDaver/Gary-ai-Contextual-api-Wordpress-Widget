@@ -25,8 +25,8 @@
    ```
 
 4. **Access the development site:**
-   - WordPress: http://localhost:8080
-   - phpMyAdmin: http://localhost:8081
+   - WordPress: http://localhost:9000
+   - phpMyAdmin: http://localhost:9001
 
 ### Environment Configuration
 
@@ -51,7 +51,7 @@ define('GARY_AI_DATASTORE_ID', '6f01eb92-f12a-4113-a39f-3c4013303482');
    - Activate the plugin in WordPress admin
 
 2. **Database Access:**
-   - Use phpMyAdmin at http://localhost:8081
+   - Use phpMyAdmin at http://localhost:9001
    - Credentials: wordpress/wordpress
 
 3. **Logs:**

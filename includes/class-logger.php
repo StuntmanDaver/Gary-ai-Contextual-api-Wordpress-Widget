@@ -62,17 +62,27 @@ class Logger implements LoggerInterface {
     private bool $logToDatabase;
 
     /**
+     * Logger context (component name).
+     *
+     * @var string
+     */
+    private string $context;
+
+    /**
      * Constructor.
      *
+     * @param string $context        Logger context (component name).
      * @param string $minLevel       Minimum log level.
      * @param bool   $logToDebugFile Whether to log to debug.log.
      * @param bool   $logToDatabase  Whether to log to database.
      */
     public function __construct( 
+        string $context = 'GaryAI',
         string $minLevel = LogLevel::INFO, 
         bool $logToDebugFile = true, 
         bool $logToDatabase = false 
     ) {
+        $this->context = $context;
         $this->minLevel = $minLevel;
         $this->logToDebugFile = $logToDebugFile;
         $this->logToDatabase = $logToDatabase;
@@ -237,7 +247,7 @@ class Logger implements LoggerInterface {
             $contextString = ' | Context: ' . wp_json_encode( $context );
         }
 
-        return "[{$timestamp}] Gary AI.{$levelUpper}: {$message}{$contextString}";
+        return "[{$timestamp}] Gary AI.{$this->context}.{$levelUpper}: {$message}{$contextString}";
     }
 
     /**

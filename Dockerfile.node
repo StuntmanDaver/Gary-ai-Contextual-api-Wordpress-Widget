@@ -3,7 +3,16 @@ FROM node:18-alpine
 
 # Install system dependencies for Playwright
 RUN apk add --no-cache \
+    # System dependencies for Playwright/Chromium
+    libstdc++ \
     chromium \
+    harfbuzz \
+    nss \
+    freetype \
+    ttf-freefont \
+    font-noto-emoji \
+    wqy-zenhei \
+    # Other required tools
     git \
     bash \
     curl \
@@ -19,11 +28,11 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install Node.js dependencies
-RUN npm ci --only=production=false
+# Set an environment variable to use the system-installed Chromium
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
-# Install Playwright browsers (system browsers already installed above)
-RUN npx playwright install-deps
+# Install Node.js dependencies
+RUN npm install
 
 # Copy application code
 COPY . .

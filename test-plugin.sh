@@ -33,7 +33,7 @@ info() {
 test_wordpress_access() {
     log "Testing WordPress accessibility..."
     
-    response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080)
+    response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9000)
     if [ "$response" = "200" ] || [ "$response" = "302" ]; then
         info "✓ WordPress is accessible (HTTP $response)"
         return 0
@@ -85,12 +85,12 @@ test_rest_api() {
     log "Testing REST API endpoints..."
     
     # Test if WordPress REST API is accessible
-    response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/wp-json/)
+    response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9000/wp-json/)
     if [ "$response" = "200" ]; then
         info "✓ WordPress REST API is accessible"
         
         # Test Gary AI specific endpoints
-        response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/wp-json/gary-ai/v1/)
+        response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9000/wp-json/gary-ai/v1/)
         if [ "$response" = "200" ] || [ "$response" = "404" ]; then
             info "✓ Gary AI REST API namespace is reachable"
         else
@@ -163,7 +163,8 @@ run_all_tests() {
         log "🎉 All tests passed! Your Gary AI plugin is ready for use."
         echo ""
         log "Next steps:"
-        echo "1. Open http://localhost:8080 in your browser"
+        if curl -s http://localhost:9000 > /dev/null; then
+        echo "1. Open http://localhost:9000 in your browser"
         echo "2. Complete WordPress setup if not done already"
         echo "3. Go to Plugins > Installed Plugins"
         echo "4. Activate the Gary AI plugin"

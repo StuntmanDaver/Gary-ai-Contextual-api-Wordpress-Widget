@@ -148,6 +148,17 @@ add_action( 'plugins_loaded', function () {
             new GaryAI\RestApiController();
         }
         
+        // Initialize admin controller - direct require to ensure it loads
+        if ( is_admin() ) {
+            $admin_file = plugin_dir_path( __FILE__ ) . 'admin/class-admin.php';
+            if ( file_exists( $admin_file ) ) {
+                require_once $admin_file;
+                if ( class_exists( 'GaryAI\Admin\Admin' ) ) {
+                    new GaryAI\Admin\Admin();
+                }
+            }
+        }
+        
         // Initialize frontend controller only if class exists and is safe
         if ( class_exists( 'GaryAI\FrontendController' ) ) {
             new GaryAI\FrontendController();

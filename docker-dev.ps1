@@ -64,8 +64,8 @@ function Start-Development {
     docker-compose exec node-dev npm install
     
     Write-Log "Development environment started successfully!"
-    Write-Info-Log "WordPress: http://localhost:8080"
-    Write-Info-Log "phpMyAdmin: http://localhost:8081"
+    Write-Info-Log "WordPress: http://localhost:9000"
+    Write-Info-Log "phpMyAdmin: http://localhost:9001"
     Write-Info-Log "Vite Dev Server: http://localhost:3000"
     Write-Info-Log ""
     Write-Info-Log "To run tests, use: .\docker-dev.ps1 test"
@@ -181,7 +181,7 @@ function Stop-Environment {
 }
 
 function Clear-Environment {
-    Write-Warning-Log "This will remove all containers and volumes. Are you sure? (y/N)"
+    Write-Warning-Custom "This will remove all containers and volumes. Are you sure? (y/N)"
     $response = Read-Host
     if ($response -match "^[yY]([eE][sS])?$") {
         Write-Log "Cleaning up Gary AI environment..."

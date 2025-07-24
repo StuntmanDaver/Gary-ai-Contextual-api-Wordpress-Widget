@@ -119,6 +119,42 @@ class ContextualAIClient {
     }
 
     /**
+     * Test connection to API and specific agent.
+     *
+     * @param string $agentId Agent ID to test.
+     * @return bool True if connection successful.
+     */
+    public function testConnection(string $agentId): bool {
+        try {
+            $health = $this->healthCheck();
+            if (empty($health)) return false;
+            
+            // Optional: Test agent query with empty prompt to verify
+            $this->queryAgentWithPrompt($agentId, 'test');
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Send message to AI (compatibility method)
+     *
+     * @param string $datastoreId Datastore ID.
+     * @param string $message Message to send.
+     * @param array $context Additional context.
+     * @return array AI response.
+     */
+    public function sendMessage(string $datastoreId, string $message, array $context = []): array {
+        $agentId = get_option('gary_ai_agent_id', '');
+        if (empty($agentId)) {
+            throw new \Exception('Agent ID not configured');
+        }
+        
+        return $this->queryAgentWithPrompt($agentId, $message, $context);
+    }
+
+    /**
      * Make an HTTP request with retry logic using WordPress native functions.
      *
      * @param string $method  HTTP method.

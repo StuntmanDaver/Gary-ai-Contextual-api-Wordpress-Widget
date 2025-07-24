@@ -1,12 +1,17 @@
 version: '3.8'
 
+# IMPORTANT: USER REQUIREMENT - WordPress MUST run on port 9000
+# phpMyAdmin MUST run on port 9001
+# MailHog MUST run on port 9025
+# DO NOT CHANGE THESE PORTS WITHOUT USER APPROVAL
+
 services:
   wordpress:
     image: wordpress:6.4-php8.0-apache
     container_name: gary-ai-wordpress
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "9000:80"  # USER REQUIREMENT: WordPress on port 9000
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: wordpress
@@ -56,7 +61,7 @@ services:
     container_name: gary-ai-phpmyadmin
     restart: unless-stopped
     ports:
-      - "8081:80"
+      - "9001:80"  # USER REQUIREMENT: phpMyAdmin on port 9001
     environment:
       PMA_HOST: db
       PMA_USER: wordpress
@@ -111,6 +116,17 @@ services:
       - CI=true
     profiles:
       - testing
+    networks:
+      - gary-ai-network
+
+  # MailHog for email testing
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: gary-ai-mailhog
+    restart: unless-stopped
+    ports:
+      - "9025:8025"  # USER REQUIREMENT: MailHog on port 9025
+      - "1025:1025"  # SMTP
     networks:
       - gary-ai-network
 

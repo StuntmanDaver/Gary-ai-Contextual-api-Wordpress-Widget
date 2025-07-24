@@ -87,7 +87,7 @@
 - [x] **COMPLETED**: Implement ARIA roles (dialog, log, textbox, status, banner, contentinfo)
 - [x] **COMPLETED**: Full accessibility compliance with keyboard navigation, focus management
 - [x] **COMPLETED**: Screen reader support with ARIA live regions and announcements
-- [ ] Set up text domain `gary-ai` and generate .pot file
+
 
 #### 3.4 Unit & e2e Tests
 - [ ] Create Jest DOM snapshots

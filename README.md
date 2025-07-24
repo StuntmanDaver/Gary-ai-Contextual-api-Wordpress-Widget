@@ -2,6 +2,15 @@
 
 *Conversational AI powered by [Contextual AI](https://contextual.ai) for WordPress.*
 
+## 🚨 CRITICAL PORT REQUIREMENTS
+
+**IMPORTANT: These ports are user requirements and must NEVER be changed:**
+- **WordPress**: Port 9000 (NOT 8080 or any other port)
+- **phpMyAdmin**: Port 9001 (NOT 8081 or any other port)
+- **MailHog**: Port 9025 (NOT 8025 or any other port)
+
+**DO NOT CHANGE THESE PORTS WITHOUT EXPLICIT USER APPROVAL**
+
 ---
 
 ## Table of Contents

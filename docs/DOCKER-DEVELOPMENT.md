@@ -41,8 +41,8 @@ This will:
 ### 2. Access Services
 
 After starting, you can access:
-- **WordPress**: http://localhost:8080
-- **phpMyAdmin**: http://localhost:8081
+- **WordPress**: http://localhost:9000
+- **phpMyAdmin**: http://localhost:9001
 - **Vite Dev Server**: http://localhost:3000
 
 ## 🧪 Running Tests
@@ -278,7 +278,7 @@ If you encounter persistent issues:
 
 1. **Start the environment**: `.\docker-dev.ps1 start`
 2. **Run tests**: `.\docker-dev.ps1 test`
-3. **Access WordPress**: http://localhost:8080
+3. **Access WordPress**: http://localhost:9000
 4. **Begin development**: Edit files and see live changes
 5. **Run specific tests**: Use individual test commands as needed
 

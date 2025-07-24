@@ -210,7 +210,7 @@ describe('Production Readiness Validation', () => {
       // Test URL validation
       const validUrls = [
         'https://example.com/wp-json/gary-ai/v1/chat',
-        'http://localhost:8080/wp-json/gary-ai/v1/token'
+        'http://localhost:9000/wp-json/gary-ai/v1/token'
       ];
 
       const invalidUrls = [

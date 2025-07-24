@@ -12,7 +12,7 @@ define('WP_DEBUG', true);
 
 // Define plugin constants
 define('GARY_AI_PLUGIN_DIR', __DIR__ . '/');
-define('GARY_AI_PLUGIN_URL', 'http://localhost:8080/wp-content/plugins/gary-ai/');
+define('GARY_AI_PLUGIN_URL', 'http://localhost:9000/wp-content/plugins/gary-ai/');
 
 echo "1. Loading WordPress simulation functions...\n";
 

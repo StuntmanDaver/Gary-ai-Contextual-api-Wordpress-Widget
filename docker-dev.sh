@@ -57,8 +57,8 @@ start_dev() {
     check_plugin_status
     
     log "Development environment started!"
-    log "WordPress: http://localhost:8080"
-    log "phpMyAdmin: http://localhost:8081"
+    log "WordPress: http://localhost:9000"
+    log "phpMyAdmin: http://localhost:9001"
     log "Plugin logs: ./logs/"
     
     # Install Node.js dependencies
@@ -66,8 +66,8 @@ start_dev() {
     docker-compose exec node-dev npm install
     
     log "Development environment started successfully!"
-    info "WordPress: http://localhost:8080"
-    info "phpMyAdmin: http://localhost:8081"
+    info "WordPress: http://localhost:9000"
+    info "phpMyAdmin: http://localhost:9001"
     info "Vite Dev Server: http://localhost:3000"
     info ""
     info "To run tests, use: ./docker-dev.sh test"
@@ -219,7 +219,7 @@ check_plugin_status() {
     fi
     
     # Check if WordPress is responding
-    if curl -s http://localhost:8080 > /dev/null; then
+    if curl -s http://localhost:9000 > /dev/null; then
         info "✓ WordPress is responding"
     else
         warn "✗ WordPress is not responding yet"
